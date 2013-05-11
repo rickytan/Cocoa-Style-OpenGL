@@ -1,70 +1,224 @@
 
-#ifndef COCOA_GL
-#define COCOA_GL
+#ifndef __COCOA_GL__
+#define __COCOA_GL__
 
+#include <stdio.h>
+
+#ifdef _WIN32
 #include <gl/glew.h>		// Header File For The OpenGL Extension Library
 #include <gl/gl.h>			// Header File For The OpenGL32 Library
 #include <gl/glu.h>			// Header File For The GLu32 Library
 #include <gl/glaux.h>		// Header File For The Glaux Library
+#elif defined(__MACOS__) ||  defined(__APPLE__)
+#include <OpenGL/gl.h>
+#include <OpenGL/glu.h>
+//#include <OpenGL/glext.h>
+#endif
 
 #ifndef CC_ENUM
+#ifdef _WIN32
 #define CC_ENUM(_type, _name) typedef enum _name _name; enum _name : _type
+#elif defined(__MACOS__) || defined(__APPLE__)
+#define CC_ENUM(_type, _name) typedef enum _name : _type _name; enum _name : _type
+#endif
 #endif
 
 
 #ifdef __cplusplus
-//extern "C" {
+extern "C" {
 #endif
-
-
-
+        
 typedef struct GLPoint {
-	GLfloat x, y;
+    GLfloat x, y;
 } GLPoint;
-
+    
 typedef struct GLSize {
-	GLfloat width, height;
+    GLfloat width, height;
 } GLSize;
-
+    
 typedef struct GLRect {
-	GLPoint origin;
-	GLSize size;
+    GLPoint origin;
+    GLSize size;
 } GLRect;
+    
+typedef struct GLVar {
+    union {
+        GLbyte charValue;
+        GLubyte ucharValue;
+        GLshort shortValue;
+        GLushort ushortValue;
+        GLint intValue;
+        GLuint uintValue;
+        GLfloat floatValue;
+        GLdouble doubleValue;
+        GLvoid *pointerValue;
+        const GLvoid *cpointerValue;
+    } data;
+
+    GLVar() { data.intValue = 0;}
+    GLVar(GLbyte b) { data.charValue = b;}
+    GLVar(GLubyte u) { data.ucharValue = u;}
+    GLVar(GLint i) { data.intValue = i;}
+    GLVar(GLuint u) { data.uintValue = u;}
+    GLVar(GLshort s) { data.shortValue = s;}
+    GLVar(GLushort s) { data.ushortValue = s;}
+    GLVar(GLfloat f) { data.floatValue = f;}
+    GLVar(GLdouble d) { data.doubleValue = d;}
+    GLVar(const GLvoid *p) { data.cpointerValue = p;}
+    GLVar(GLvoid *p) { data.pointerValue = p;}
+    GLbyte getChar() { return data.charValue;}
+    GLubyte getUchar() { return data.ucharValue;}
+    GLshort getShort() { return data.shortValue;}
+    GLushort getUshort() { return data.ushortValue;}
+    GLint getInt() { return data.intValue;}
+    GLuint getUint() { return data.uintValue;}
+    GLfloat getFloat() { return data.floatValue;}
+    GLdouble getDouble() { return data.doubleValue;}
+    const GLvoid* getPointer() const{ return data.cpointerValue;}
+    GLvoid* getPointer() { return data.pointerValue;}
+    
+} GLVar;
 
 
 CC_ENUM(int, GLSwitch) {
+    /*      GL_FOG */
+    /*      GL_LIGHTING */
+    /*      GL_TEXTURE_1D */
+    /*      GL_TEXTURE_2D */
+    /*      GL_LINE_STIPPLE */
+    /*      GL_POLYGON_STIPPLE */
+    /*      GL_CULL_FACE */
+    /*      GL_ALPHA_TEST */
+    /*      GL_BLEND */
+    /*      GL_INDEX_LOGIC_OP */
+    /*      GL_COLOR_LOGIC_OP */
+    /*      GL_DITHER */
+    GLSwitchStencilTest = GL_STENCIL_TEST,
+    /*      GL_DEPTH_TEST */
+    /*      GL_CLIP_PLANE0 */
+    /*      GL_CLIP_PLANE1 */
+    /*      GL_CLIP_PLANE2 */
+    /*      GL_CLIP_PLANE3 */
+    /*      GL_CLIP_PLANE4 */
+    /*      GL_CLIP_PLANE5 */
+    /*      GL_LIGHT0 */
+    /*      GL_LIGHT1 */
+    /*      GL_LIGHT2 */
+    /*      GL_LIGHT3 */
+    /*      GL_LIGHT4 */
+    /*      GL_LIGHT5 */
+    /*      GL_LIGHT6 */
+    /*      GL_LIGHT7 */
+    /*      GL_TEXTURE_GEN_S */
+    /*      GL_TEXTURE_GEN_T */
+    /*      GL_TEXTURE_GEN_R */
+    /*      GL_TEXTURE_GEN_Q */
+    /*      GL_MAP1_VERTEX_3 */
+    /*      GL_MAP1_VERTEX_4 */
+    /*      GL_MAP1_COLOR_4 */
+    /*      GL_MAP1_INDEX */
+    /*      GL_MAP1_NORMAL */
+    /*      GL_MAP1_TEXTURE_COORD_1 */
+    /*      GL_MAP1_TEXTURE_COORD_2 */
+    /*      GL_MAP1_TEXTURE_COORD_3 */
+    /*      GL_MAP1_TEXTURE_COORD_4 */
+    /*      GL_MAP2_VERTEX_3 */
+    /*      GL_MAP2_VERTEX_4 */
+    /*      GL_MAP2_COLOR_4 */
+    /*      GL_MAP2_INDEX */
+    /*      GL_MAP2_NORMAL */
+    /*      GL_MAP2_TEXTURE_COORD_1 */
+    /*      GL_MAP2_TEXTURE_COORD_2 */
+    /*      GL_MAP2_TEXTURE_COORD_3 */
+    /*      GL_MAP2_TEXTURE_COORD_4 */
+    GLSwitchPointSmooth = GL_POINT_SMOOTH,
+    GLSwitchLineSmooth = GL_LINE_SMOOTH,
+    /*      GL_POLYGON_SMOOTH */
+    /*      GL_SCISSOR_TEST */
+    /*      GL_COLOR_MATERIAL */
+    GLSwitchNormalize = GL_NORMALIZE,
+    /*      GL_AUTO_NORMAL */
+    GLClientSwitchVertexArray = GL_VERTEX_ARRAY,
+    /*      GL_NORMAL_ARRAY */
+    /*      GL_COLOR_ARRAY */
+    /*      GL_INDEX_ARRAY */
+    /*      GL_TEXTURE_COORD_ARRAY */
+    /*      GL_EDGE_FLAG_ARRAY */
+    /*      GL_POLYGON_OFFSET_POINT */
+    /*      GL_POLYGON_OFFSET_LINE */
+    /*      GL_POLYGON_OFFSET_FILL */
+    /*      GL_COLOR_TABLE */
+    /*      GL_POST_CONVOLUTION_COLOR_TABLE */
+    /*      GL_POST_COLOR_MATRIX_COLOR_TABLE */
+    /*      GL_CONVOLUTION_1D */
+    /*      GL_CONVOLUTION_2D */
+    GLSwitchSeparable2D = GL_SEPARABLE_2D,
+    GLSwitchHistogram = GL_HISTOGRAM,
+    GLSwitchMinMax = GL_MINMAX,
+    GLSwitchRescaleNormal = GL_RESCALE_NORMAL,
+    GLSwitchTexture3D = GL_TEXTURE_3D,
 	GLSwitchDepthTest = GL_DEPTH_TEST,
 	GLSwitchAlphaTest = GL_ALPHA_TEST,
 	GLSwitchLighting = GL_LIGHTING,
-	GLSwitchNormalize = GL_NORMALIZE,
 	GLSwitchCullFace = GL_CULL_FACE,
 	GLSwitchBlend = GL_BLEND,
 	GLSwitchLineStipple = GL_LINE_STIPPLE,
 };
 
-inline void ccglEnable(GLSwitch type)
+inline void ccGLEnable(GLSwitch type)
 {
 	glEnable(type);
 }
 
-inline void ccglTurnOn(GLSwitch type)
+inline void ccGLTurnOn(GLSwitch type)
 {
 	glEnable(type);
 }
 
-inline void ccglDisable(GLSwitch type)
+inline void ccGLDisable(GLSwitch type)
 {
 	glDisable(type);
 }
 
-inline void ccglTurnOff(GLSwitch type)
+inline void ccGLTurnOff(GLSwitch type)
 {
 	glDisable(type);
 }
 
-inline GLboolean ccglIsEnabled(GLSwitch type)
+inline GLboolean ccGLIsEnabled(GLSwitch type)
 {
 	return glIsEnabled(type);
+}
+    
+    CC_ENUM(int, GLAttribMask) {
+        GLAttribMaskCurrent = GL_CURRENT_BIT,
+        GLAttribMaskPoint = GL_POINT_BIT,
+        GLAttribMaskLine = GL_LINE_BIT,
+        GLAttribMaskPolygon = GL_POLYGON_BIT,
+        GLAttribMaskPolygonStipple = GL_POLYGON_STIPPLE_BIT,
+        GLAttribMaskPixelMode = GL_PIXEL_MODE_BIT,
+        GLAttribMaskLighting = GL_LIGHTING_BIT,
+        GLAttribMaskFog = GL_FOG_BIT,
+        GLAttribMaskDepthBuffer = GL_DEPTH_BUFFER_BIT,
+        GLAttribMaskAccumBuffer = GL_ACCUM_BUFFER_BIT,
+        GLAttribMaskStencilBuffer = GL_STENCIL_BUFFER_BIT,
+        GLAttribMaskViewport = GL_VIEWPORT_BIT,
+        GLAttribMaskTransform = GL_TRANSFORM_BIT,
+        GLAttribMaskEnable = GL_ENABLE_BIT,
+        GLAttribMaskColorBuffer = GL_COLOR_BUFFER_BIT,
+        GLAttribMaskHint = GL_HINT_BIT,
+        GLAttribMaskEval = GL_EVAL_BIT,
+        GLAttribMaskList = GL_LIST_BIT,
+        GLAttribMaskTexture = GL_TEXTURE_BIT,
+        GLAttribMaskScissor = GL_SCISSOR_BIT,
+        GLAttribMaskAllAttrib = GL_ALL_ATTRIB_BITS,
+        GLAttribMaskDepthAndColorBuffer = GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT,
+        GLAttribMaskAllBuffer = GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT | GL_ACCUM_BUFFER_BIT,
+    };
+
+inline void ccGLClear(GLAttribMask mask)
+{
+    glClear(mask);
 }
 
 CC_ENUM(int, GLDrawMode) {
@@ -80,12 +234,12 @@ CC_ENUM(int, GLDrawMode) {
 	GLDrawModePolygon = GL_POLYGON,
 };
 
-inline void ccglBegin(GLDrawMode mode)
+inline void ccGLBegin(GLDrawMode mode)
 {
 	glBegin(mode);
 }
 
-inline void ccglEnd()
+inline void ccGLEnd()
 {
 	glEnd();
 }
@@ -120,24 +274,32 @@ CC_ENUM(int, GLLightParam) {
 	GLLightParamQuadraticAttenuationf = GL_QUADRATIC_ATTENUATION,
 };
 
-inline static void ccglLight(GLLight light, GLLightParam param, GLfloat value)
+inline static void ccGLLight(GLLight light, GLLightParam param, GLVar value)
 {
-	glLightf(light, param, value);
+    switch (param) {
+        case GLLightParamAmbientfv4:
+        case GLLightParamDiffusefv4:
+        case GLLightParamPositionfv4:
+        case GLLightParamSpecularfv4:
+        case GLLightParamSpotDirectionfv3:
+            glLightfv(light, param, (const GLfloat*)value.getPointer());
+            break;
+        default:
+            glLightf(light, param, value.getFloat());
+            break;
+    }
 }
 
-inline static void ccglLight(GLLight light, GLLightParam param, const GLfloat *value)
+inline void ccGLLightModel(GLLightModel model, GLVar value)
 {
-	glLightfv(light, param, value);
-}
-
-inline void ccglLightModel(GLLightModel model, GLfloat value)
-{
-	glLightModelf(model, value);
-}
-
-inline void ccglLightModel(GLLightModel model, const GLfloat *value)
-{
-	glLightModelfv(model, value);
+    switch (model) {
+        case GLLightModelAmbientfv3:
+            glLightModelfv(model, (const GLfloat*)value.getPointer());
+            break;
+        default:
+            glLightModelf(model, value.getFloat());
+            break;
+    }
 }
 
 CC_ENUM(int, GLUnsignedType) {
@@ -193,52 +355,52 @@ CC_ENUM(int, GLColorType) {
 	GLColorTypeDouble = GL_DOUBLE,
 };
 
-inline void ccglVertexPointer(GLint size_2or3or4, GLVertexType type, GLsizei stride, const GLvoid *pointer)
+inline void ccGLVertexPointer(GLint size_2or3or4, GLVertexType type, GLsizei stride, const GLvoid *pointer)
 {
 	glVertexPointer(size_2or3or4, type, stride, pointer);
 }
 
-inline void ccglColorPointer(GLint size_3or4, GLColorType type, GLsizei stride, const GLvoid *pointer)
+inline void ccGLColorPointer(GLint size_3or4, GLColorType type, GLsizei stride, const GLvoid *pointer)
 {
 	glColorPointer(size_3or4, type, stride, pointer);
 }
 
-inline void ccglSecondaryColorPointer(GLColorType type, GLsizei stride, const GLvoid *pointer)
+inline void ccGLSecondaryColorPointer(GLColorType type, GLsizei stride, const GLvoid *pointer)
 {
 	glSecondaryColorPointer(3, type, stride, pointer);
 }
 
-inline void ccglNormalPointer(GLSignedType type, GLsizei stride, const GLvoid *pointer)
+inline void ccGLNormalPointer(GLSignedType type, GLsizei stride, const GLvoid *pointer)
 {
 	glNormalPointer(type, stride, pointer);
 }
 
-inline void ccglFogCoordPointer(GLDecimalType type, GLsizei stride, const GLvoid *pointer)
+inline void ccGLFogCoordPointer(GLDecimalType type, GLsizei stride, const GLvoid *pointer)
 {
 	glFogCoordPointer(type, stride, pointer);
 }
 
-inline void ccglTexCoordPointer(GLint size_1or2or3or4, GLVertexType type, GLsizei stride, const GLvoid *pointer)
+inline void ccGLTexCoordPointer(GLint size_1or2or3or4, GLVertexType type, GLsizei stride, const GLvoid *pointer)
 {
 	glTexCoordPointer(size_1or2or3or4, type, stride, pointer);
 }
 
-inline void ccglEdgeFlagPointer(GLsizei stride, const GLvoid *pointer)
+inline void ccGLEdgeFlagPointer(GLsizei stride, const GLvoid *pointer)
 {
 	glEdgeFlagPointer(stride, pointer);
 }
 
-inline void ccglDrawElements(GLDrawMode mode, GLsizei count, GLUnsignedType type, const GLvoid *indices)
+inline void ccGLDrawElements(GLDrawMode mode, GLsizei count, GLUnsignedType type, const GLvoid *indices)
 {
 	glDrawElements(mode, count, type, indices);
 }
 
-CC_ENUM(int, GLFaceDirection) {
-	GLFaceDirectionCounterClockWiseIsFront = GL_CCW,
-	GLFaceDirectionClockWiseIsFront = GL_CW,
+CC_ENUM(int, GLFrontFaceDirection) {
+	GLFrontFaceDirectionCounterClockWiseIsFront = GL_CCW,
+	GLFrontFaceDirectionClockWiseIsFront = GL_CW,
 };
 
-inline void ccglFrontFace(GLFaceDirection direction)
+inline void ccGLFrontFace(GLFrontFaceDirection direction)
 {
 	glFrontFace(direction);
 }
@@ -249,19 +411,25 @@ CC_ENUM(int, GLFace) {
 	GLFaceFrontAndBack = GL_FRONT_AND_BACK,
 };
 
-inline void ccglCullFace(GLFace face)
+inline void ccGLCullFace(GLFace face)
 {
 	glCullFace(face);
 }
 
-inline void ccglMaterial(GLFace face, GLLightParam param, GLfloat value)
+inline void ccGLMaterial(GLFace face, GLLightParam param, GLVar value)
 {
-	glMaterialf(face, param, value);
-}
-
-inline void ccglMaterial(GLFace face, GLLightParam param, const GLfloat *value)
-{
-	glMaterialfv(face, param, value);
+    switch (param) {
+        case GLLightParamAmbientfv4:
+        case GLLightParamPositionfv4:
+        case GLLightParamDiffusefv4:
+        case GLLightParamSpecularfv4:
+        case GLLightParamSpotDirectionfv3:
+            glMaterialfv(face, param, (const GLfloat*)value.getPointer());
+            break;
+        default:
+            glMaterialf(face, param, value.getFloat());
+            break;
+    }
 }
 
 CC_ENUM(int, GLPolygonMode) {
@@ -270,7 +438,7 @@ CC_ENUM(int, GLPolygonMode) {
 	GLPolygonModeFill = GL_FILL,
 };
 
-inline void ccglPolygonMode(GLFace face, GLPolygonMode mode)
+inline void ccGLPolygonMode(GLFace face, GLPolygonMode mode)
 {
 	glPolygonMode(face, mode);
 }
@@ -281,7 +449,7 @@ CC_ENUM(int, GLMatrixMode) {
 	GLMatrixModeTexture = GL_TEXTURE,
 };
 
-inline void ccglMatrixMode(GLMatrixMode mode)
+inline void ccGLMatrixMode(GLMatrixMode mode)
 {
 	glMatrixMode(mode);
 }
@@ -291,13 +459,13 @@ CC_ENUM(int, GLShadeModel) {
 	GLShadeModelSmooth = GL_SMOOTH,
 };
 
-inline void ccglShadeModel(GLShadeModel model)
+inline void ccGLShadeModel(GLShadeModel model)
 {
 	glShadeModel(model);
 }
 
 #ifdef __cplusplus
-//};
+}
 #endif
 
 #endif

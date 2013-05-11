@@ -1,0 +1,7 @@
+//
+// Prefix header for all source files of the 'CCgl' target in the 'CCgl' project
+//
+
+#ifdef __OBJC__
+    #import <Cocoa/Cocoa.h>
+#endif
